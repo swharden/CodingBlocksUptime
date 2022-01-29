@@ -1,0 +1,44 @@
+{
+    "ok": true,
+    "channel": {
+        "id": "C0GL77VA6",
+        "name": "general",
+        "is_channel": true,
+        "is_group": false,
+        "is_im": false,
+        "is_mpim": false,
+        "is_private": false,
+        "created": 1450151359,
+        "is_archived": false,
+        "is_general": true,
+        "unlinked": 0,
+        "name_normalized": "general",
+        "is_shared": false,
+        "is_org_shared": false,
+        "is_pending_ext_shared": false,
+        "pending_shared": [],
+        "parent_conversation": null,
+        "creator": "U0GL7K9BJ",
+        "is_read_only": false,
+        "is_thread_only": false,
+        "is_non_threadable": false,
+        "is_ext_shared": false,
+        "shared_team_ids": [
+            "T0GL6HDH7"
+        ],
+        "pending_connected_team_ids": [],
+        "is_member": false,
+        "topic": {
+            "value": "{CodingBlocks}.NET - <http://www.codingblocks.net/slack-code-of-conduct/> P.S. Mandalorian spoilers == Permaban | P.S.S. X-Files spoiler == Permaban | P.S.S.S Seinfeld spoiler === mega super permaban | P.S.S.S.S Year 2020 spoilers welcome",
+            "creator": "U0GL7DDB4",
+            "last_set": 1606590700
+        },
+        "purpose": {
+            "value": "This channel is for team-wide communication and announcements. All team members are in this channel. See <http://www.codingblocks.net/slack-code-of-conduct/> for our code of conduct.",
+            "creator": "U64CEDWET",
+            "last_set": 1586111772
+        },
+        "previous_names": [],
+        "num_members": 6401
+    }
+}
