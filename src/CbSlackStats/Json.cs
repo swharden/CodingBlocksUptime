@@ -26,6 +26,8 @@ namespace CbSlackStats
             }
             writer.WriteEndObject();
 
+            writer.WriteEndObject();
+
             writer.Flush();
             string json = Encoding.UTF8.GetString(stream.ToArray());
 
