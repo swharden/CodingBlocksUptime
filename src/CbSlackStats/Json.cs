@@ -17,11 +17,11 @@ namespace CbSlackStats
 
             writer.WriteStartObject();
             writer.WriteString("updated", DateTime.UtcNow.ToString("o"));
-            
+
             writer.WriteStartObject("records");
             foreach (var record in countsByDate)
             {
-                writer.WriteNumber(record.Key.ToString("o"), record.Value);
+                writer.WriteNumber($"{record.Key:o}Z", record.Value);
             }
             writer.WriteEndObject();
 
