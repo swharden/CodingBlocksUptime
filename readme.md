@@ -41,4 +41,4 @@ dotnet user-secrets set slacktoken xoxb-1234567890
   ```
 
 **Executing Azure Functions**
-  * The API token is stored with the other [Azure Functions App Keys](https://docs.microsoft.com/en-us/azure/azure-functions/security-concepts) and accessed when running in the cloud via environment variables.
+  * The API token is stored with the other [Azure Functions Application Settings](https://docs.microsoft.com/en-us/azure/app-service/configure-common) and accessed when running in the cloud via environment variables.
