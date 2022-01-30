@@ -3,7 +3,7 @@ string txtPathIn = Path.GetFullPath("../../../../david.txt");
 string csvPathOut = txtPathIn + ".csv";
 
 System.Text.StringBuilder sb = new();
-sb.AppendLine("PartitionKey,RowKey,Timestamp,Count,Count@type");
+sb.AppendLine("PartitionKey,RowKey,Count,Count@type");
 string partitionKey = "partition1";
 string countType = "Edm.Int32";
 
@@ -17,12 +17,11 @@ foreach (string rawLine in File.ReadLines(txtPathIn))
         continue;
 
     string[] parts = line.Split("\t");
-    string timestamp = DateTime.Parse(parts[0])
+    string rowKey = DateTime.Parse(parts[0])
         .ToString(CultureInfo.InvariantCulture.DateTimeFormat.UniversalSortableDateTimePattern)
         .Replace(" ", "T");
     string count = int.Parse(parts[1]).ToString();
-    string rowKey = Guid.NewGuid().ToString();
-    line = string.Join(",", new string[] { partitionKey, rowKey, timestamp, count, countType });
+    line = string.Join(",", new string[] { partitionKey, rowKey, count, countType });
 
     Console.WriteLine(line);
     sb.AppendLine(line);
