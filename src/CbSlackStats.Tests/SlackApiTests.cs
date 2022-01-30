@@ -13,9 +13,17 @@ namespace CbSlackStats.Tests
         [SetUp]
         public void Setup_SetEnvironmentVariableFromUserSecret()
         {
-            string token = new ConfigurationBuilder().AddUserSecrets<SlackApiTests>().Build()["slacktoken"];
-            if (token is not null)
-                Environment.SetEnvironmentVariable(TOKEN_ENV_VARNAME, token);
+            try
+            {
+                string token = new ConfigurationBuilder().AddUserSecrets<SlackApiTests>().Build()["slacktoken"];
+                if (token is not null)
+                    Environment.SetEnvironmentVariable(TOKEN_ENV_VARNAME, token);
+            }
+            catch (System.IO.FileNotFoundException)
+            {
+                // no user secrets found, probably because we are in GitHub Actions or Azure Pipelines
+                return;
+            }
         }
 
         public static string GetTokenFromEnvironmentVariable()
