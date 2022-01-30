@@ -8,6 +8,11 @@ This project aims to automate the logging and display of stats related to the Co
 
 Pushing a commit to the main branch of this repository triggers GitHub actions to build, test, and deploy the Azure Functions application into production. See run logs in the [actions tab](https://github.com/swharden/cb-slack-stats/actions) or inspect [ci.yaml](.github/workflows/ci.yaml) for implementation details.
 
+### Triggering Updates
+
+By default an update is triggered hourly. An API endpoint is available to trigger an update manually, but it requires the master key for the Azure Functions app. For more see [Manually run a non HTTP-triggered function
+](https://docs.microsoft.com/en-us/azure/azure-functions/functions-manually-run-non-http).
+
 ### Accessing Secrets
 Let's _not_ commit the slack API key to source control. However, this secret must be accessed in a few different places:
 
