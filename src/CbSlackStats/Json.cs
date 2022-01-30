@@ -9,15 +9,20 @@ namespace CbSlackStats
 {
     public static class Json
     {
-        public static string DatedCountsToJson(SortedDictionary<DateTime, int> countsByDate)
+        public static string DatedCountsToJson(SortedDictionary<DateTime, int> countsByDate, bool indented = true)
         {
             using var stream = new MemoryStream();
-            var options = new JsonWriterOptions() { Indented = true };
+            var options = new JsonWriterOptions() { Indented = indented };
             using var writer = new Utf8JsonWriter(stream, options);
 
             writer.WriteStartObject();
+            writer.WriteString("updated", DateTime.UtcNow.ToString("o"));
+            
+            writer.WriteStartObject("records");
             foreach (var record in countsByDate)
+            {
                 writer.WriteNumber(record.Key.ToString("o"), record.Value);
+            }
             writer.WriteEndObject();
 
             writer.Flush();
