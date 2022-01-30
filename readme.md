@@ -6,6 +6,8 @@
 
 **Live Website: https://swharden.github.io/cb-slack-stats/**
 
+<a href='https://cbslackstats.z20.web.core.windows.net/general-member-count.png'><img src='https://cbslackstats.z20.web.core.windows.net/general-member-count.png'></a>
+
 ## Developer Notes
 
 ### GitHub Actions
