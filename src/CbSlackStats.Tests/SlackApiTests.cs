@@ -37,4 +37,15 @@ namespace CbSlackStats.Tests
             string token = GetTokenFromEnvironmentVariable();
             Assert.That(token.StartsWith("xoxb-"));
         }
+
+        [Test]
+        public void Test_Api_GetGeneralMemberCount()
+        {
+            string token = GetTokenFromEnvironmentVariable();
+            Task<int> task = SlackAPI.GetGeneralMemberCountAsync(token, CB_GENERAL_CHANNEL_ID);
+            int memberCount = task.Result;
+            Console.WriteLine($"The {CB_GENERAL_CHANNEL_ID} channel has {memberCount:N0} members");
+            Assert.Greater(memberCount, 100);
+        }
+    }
 }
