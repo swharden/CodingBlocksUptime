@@ -7,15 +7,14 @@ namespace CbSlackStats.Tests
 {
     public class SlackApiTests
     {
-        const string TOKEN_ENV_VARNAME = "cbSlackStatsToken";
-        const string CB_GENERAL_CHANNEL_ID = "C0GL77VA6"; // found from conversations.list
+        const string TOKEN_ENV_VARNAME = "CB_SLACK_TOKEN";
 
         [SetUp]
         public void Setup_SetEnvironmentVariableFromUserSecret()
         {
             try
             {
-                string token = new ConfigurationBuilder().AddUserSecrets<SlackApiTests>().Build()["slacktoken"];
+                string token = new ConfigurationBuilder().AddUserSecrets<SlackApiTests>().Build()[TOKEN_ENV_VARNAME];
                 if (token is not null)
                     Environment.SetEnvironmentVariable(TOKEN_ENV_VARNAME, token);
             }
@@ -50,9 +49,9 @@ namespace CbSlackStats.Tests
         public void Test_Api_GetGeneralMemberCount()
         {
             string token = GetTokenFromEnvironmentVariable();
-            Task<int> task = SlackAPI.GetGeneralMemberCountAsync(token, CB_GENERAL_CHANNEL_ID);
+            Task<int> task = SlackAPI.GetGeneralMemberCountAsync(token);
             int memberCount = task.Result;
-            Console.WriteLine($"The {CB_GENERAL_CHANNEL_ID} channel has {memberCount:N0} members");
+            Console.WriteLine($"The General channel has {memberCount:N0} members");
             Assert.Greater(memberCount, 100);
         }
     }

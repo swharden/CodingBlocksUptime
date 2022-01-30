@@ -8,9 +8,11 @@ namespace CbSlackStats
 {
     public static class SlackAPI
     {
-        public static async Task<int> GetGeneralMemberCountAsync(string token, string channelID)
+        private static readonly string CB_GENERAL_CHANNEL_ID = "C0GL77VA6"; // found from conversations.list
+
+        public static async Task<int> GetGeneralMemberCountAsync(string token)
         {
-            var uri = new Uri($"https://slack.com/api/conversations.info?channel={channelID}&include_num_members=true");
+            var uri = new Uri($"https://slack.com/api/conversations.info?channel={CB_GENERAL_CHANNEL_ID}&include_num_members=true");
             var auth = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
             HttpClient client = new();
@@ -20,6 +22,7 @@ namespace CbSlackStats
             Task<string> getStringTask = client.GetStringAsync(uri);
             string txt = await getStringTask;
 
+            // TODO: JSON PARSING
             return txt.Length;
         }
     }
