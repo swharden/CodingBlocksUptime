@@ -40,5 +40,31 @@ namespace CbSlackStats.Tests
             Assert.DoesNotThrow(() => SlackAPI.ThrowIfRequestIsNotOK(doc));
             Assert.AreEqual(6401, SlackAPI.MemberCountFromChannelInfo(doc));
         }
+
+        private static SortedDictionary<DateTime, int> GetRandomCountRecords()
+        {
+            Random rand = new(0);
+            SortedDictionary<DateTime, int> counts = new();
+            int count = 0;
+            DateTime dt = new(2000, 1, 1);
+            for (int i = 0; i < 10; i++)
+            {
+                dt = dt.AddSeconds(rand.Next(10_000_000));
+                count += rand.Next(100);
+                counts.Add(dt, count);
+            }
+            return counts;
+        }
+
+        [Test]
+        public void Test_DatedCounts_ToJson()
+        {
+            SortedDictionary<DateTime, int> counts = GetRandomCountRecords();
+            string json = Json.DatedCountsToJson(counts);
+            Console.WriteLine(json);
+
+            Assert.IsNotNull(json);
+            Assert.Greater(json.Length, 100);
+        }
     }
 }
