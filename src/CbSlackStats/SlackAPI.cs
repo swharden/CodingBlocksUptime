@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 
 namespace CbSlackStats
 {
@@ -21,9 +17,27 @@ namespace CbSlackStats
 
             Task<string> getStringTask = client.GetStringAsync(uri);
             string txt = await getStringTask;
+            using JsonDocument doc = JsonDocument.Parse(txt);
+            ThrowIfRequestIsNotOK(doc);
 
-            // TODO: JSON PARSING
-            return txt.Length;
+            int memberCount = MemberCountFromChannelInfo(doc);
+            return memberCount;
+        }
+
+        public static bool RequestIsOK(JsonDocument doc)
+        {
+            return doc.RootElement.GetProperty("ok").GetBoolean();
+        }
+
+        public static void ThrowIfRequestIsNotOK(JsonDocument doc)
+        {
+            if (!RequestIsOK(doc))
+                throw new InvalidOperationException("request did not return OK");
+        }
+
+        public static int MemberCountFromChannelInfo(JsonDocument doc)
+        {
+            return doc.RootElement.GetProperty("channel").GetProperty("num_members").GetInt32();
         }
     }
 }
