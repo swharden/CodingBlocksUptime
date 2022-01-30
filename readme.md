@@ -1,18 +1,18 @@
-# CodingBlocks Slack Stats
+# ![](docs/favicon.png)  CodingBlocks Slack Stats
 
-This project aims to automate the logging and display of stats related to the [CodingBlock Slack](https://www.codingblocks.net/slack/)
+[![Build and Test](https://github.com/swharden/cb-slack-stats/actions/workflows/ci.yaml/badge.svg)](https://github.com/swharden/cb-slack-stats/actions/workflows/ci.yaml)
 
-* Charts: https://swharden.github.io/cb-slack-stats/
+**This project regularly records statistics about the [CodingBlock Slack](https://www.codingblocks.net/slack/) so they can be viewed in historical context.** An Azure Function periodically engages the [Slack API](https://api.slack.com/methods) and logs metrics of interest using blob table storage. Historical records are analyzed and made available as JSON files using blob storage configured as a static website. This repository serves as [GitHub Pages](https://pages.github.com/) index that uses Vanilla JS to retrieve the JSON and display it interactively using [Google Charts](https://developers.google.com/chart/interactive/docs/gallery). A static image is also generated using [ScottPlot](https://scottplot.net/) suitable for inclusion in JavaScript-free static pages.
 
-* Raw data: https://cbslackstats.z20.web.core.windows.net/general-member-count.json
+**Live Website: https://swharden.github.io/cb-slack-stats/**
 
 ## Developer Notes
 
 ### GitHub Actions
 
-Pushing a commit to the main branch of this repository triggers GitHub actions to build, test, and deploy the Azure Functions application into production. See run logs in the [actions tab](https://github.com/swharden/cb-slack-stats/actions) or inspect [ci.yaml](.github/workflows/ci.yaml) for implementation details.
+Pushing a commit to the main branch of this repository triggers GitHub actions to build, test, and deploy the Azure Functions application and website into production. See run logs in the [actions tab](https://github.com/swharden/cb-slack-stats/actions) or inspect [ci.yaml](.github/workflows/ci.yaml) for implementation details.
 
-### Triggering Updates
+### Trigger Updates Manually
 
 By default an update is triggered hourly. An API endpoint is available to trigger an update manually, but it requires the master key for the Azure Functions app. For more see [Manually run a non HTTP-triggered function
 ](https://docs.microsoft.com/en-us/azure/azure-functions/functions-manually-run-non-http).
