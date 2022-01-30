@@ -1,8 +1,10 @@
 # CodingBlocks Slack Stats
 
-This project aims to automate the logging and display of stats related to the CodingBlock Slack: https://www.codingblocks.net/slack/
+This project aims to automate the logging and display of stats related to the [CodingBlock Slack](https://www.codingblocks.net/slack/)
 
-The latest member count can be found at: https://cbslackstats.z20.web.core.windows.net/general-member-count.json
+* Charts: https://swharden.github.io/cb-slack-stats/
+
+* Raw data: https://cbslackstats.z20.web.core.windows.net/general-member-count.json
 
 ## Developer Notes
 
