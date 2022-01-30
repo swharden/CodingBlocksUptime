@@ -11,27 +11,10 @@ namespace CbSlackStats.Tests
 {
     internal class JsonTests
     {
-        private readonly static string DataFolder = GetDataFolder();
-
-        private static string GetDataFolder(int maxLevelsUp = 10)
-        {
-            string dirname = Path.GetFullPath("./");
-            for (int i = 0; i < maxLevelsUp; i++)
-            {
-                string dataFolderPath = Path.Combine(dirname ?? "", "dev/sample-data");
-                if (Directory.Exists(dataFolderPath))
-                    return dataFolderPath;
-                else
-                    dirname = Path.GetDirectoryName(dirname) ?? "";
-            }
-
-            throw new InvalidOperationException("could not locate data folder");
-        }
-
         [Test]
         public void Test_JsonParsing_ChannelMemberCount()
         {
-            string jsonFilePath = Path.Combine(DataFolder, "conversations.info.json");
+            string jsonFilePath = Path.Combine(SampleData.DataFolder, "conversations.info.json");
             Assert.That(File.Exists(jsonFilePath));
             string txt = File.ReadAllText(jsonFilePath);
             using JsonDocument doc = JsonDocument.Parse(txt);
@@ -65,6 +48,17 @@ namespace CbSlackStats.Tests
 
             Assert.IsNotNull(json);
             Assert.Greater(json.Length, 100);
+        }
+
+        [Test]
+        public void Test_DatedCounts_FromJson()
+        {
+            string jsonFilePath = Path.Combine(SampleData.DataFolder, "general-member-count.json");
+            string json = File.ReadAllText(jsonFilePath);
+            SortedDictionary<DateTime, int> counts = Json.DatedCountsFromJson(json);
+
+            Assert.IsNotNull(counts);
+            Assert.AreEqual(118, counts.Count);
         }
     }
 }

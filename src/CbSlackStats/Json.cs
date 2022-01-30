@@ -33,5 +33,18 @@ namespace CbSlackStats
 
             return json;
         }
+
+        public static SortedDictionary<DateTime, int> DatedCountsFromJson(string json)
+        {
+            SortedDictionary<DateTime, int> counts = new();
+            using JsonDocument document = JsonDocument.Parse(json);
+            foreach (JsonProperty property in document.RootElement.GetProperty("records").EnumerateObject())
+            {
+                DateTime timestamp = DateTime.Parse(property.Name.ToString());
+                int count = int.Parse(property.Value.ToString());
+                counts.Add(timestamp, count);
+            }
+            return counts;
+        }
     }
 }
