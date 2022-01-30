@@ -7,6 +7,10 @@ namespace CbSlackStats.Functions.TableEntities
     {
         public int Count { get; set; }
 
+        public DateTime DateTime => DateTime.Parse(RowKey);
+
+        public GeneralMemberCount() { }
+
         public GeneralMemberCount(int count, DateTime? timestamp = null)
         {
             PartitionKey = "partition1";
