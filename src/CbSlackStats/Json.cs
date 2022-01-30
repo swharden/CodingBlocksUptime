@@ -21,7 +21,8 @@ namespace CbSlackStats
             writer.WriteStartObject("records");
             foreach (var record in countsByDate)
             {
-                writer.WriteNumber($"{record.Key:o}Z", record.Value);
+                string timestamp = record.Key.ToString("o").Split(".")[0] + "Z";
+                writer.WriteNumber(timestamp, record.Value);
             }
             writer.WriteEndObject();
 
