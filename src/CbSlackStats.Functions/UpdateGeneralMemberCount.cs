@@ -86,7 +86,8 @@ namespace CbSlackStats.Functions
         private static async Task UploadPlotImage(CloudStorageAccount account, SortedDictionary<DateTime, int> counts, ILogger log)
         {
             const string FILENAME = "general-member-count.png";
-            byte[] imageBytes = Plot.GeneratePng(600, 400, counts);
+            //byte[] imageBytes = Plot.GeneratePng(600, 400, counts);
+            byte[] imageBytes = { 1, 2, 3 };
 
             CloudBlobClient blobClient = account.CreateCloudBlobClient();
             CloudBlobContainer container = blobClient.GetContainerReference("$web");
