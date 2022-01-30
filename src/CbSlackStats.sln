@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CbSlackStats", "CbSlackStat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CbSlackStats.Tests", "CbSlackStats.Tests\CbSlackStats.Tests.csproj", "{9D34F096-2ABC-41A1-A926-8F266AF24A02}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CbSlackStats.Functions", "CbSlackStats.Functions\CbSlackStats.Functions.csproj", "{449ACF44-DF41-4D5E-AEA9-46AF20523973}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{9D34F096-2ABC-41A1-A926-8F266AF24A02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D34F096-2ABC-41A1-A926-8F266AF24A02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D34F096-2ABC-41A1-A926-8F266AF24A02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{449ACF44-DF41-4D5E-AEA9-46AF20523973}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{449ACF44-DF41-4D5E-AEA9-46AF20523973}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{449ACF44-DF41-4D5E-AEA9-46AF20523973}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{449ACF44-DF41-4D5E-AEA9-46AF20523973}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
