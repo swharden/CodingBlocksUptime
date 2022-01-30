@@ -7,49 +7,46 @@ namespace CbSlackStats.Tests
 {
     public class SlackApiTests
     {
-        const string TOKEN_ENV_VARNAME = "CB_SLACK_TOKEN";
+        private static string SlackToken => GetSecret("CB_SLACK_TOKEN");
 
-        [SetUp]
-        public void Setup_SetEnvironmentVariableFromUserSecret()
+        /// <summary>
+        /// Get a local user secret and if not found return the environment variable with the same name
+        /// </summary>
+        private static string GetSecret(string secretName)
         {
             try
             {
-                string token = new ConfigurationBuilder().AddUserSecrets<SlackApiTests>().Build()[TOKEN_ENV_VARNAME];
-                if (token is not null)
-                    Environment.SetEnvironmentVariable(TOKEN_ENV_VARNAME, token);
+                var config = new ConfigurationBuilder().AddUserSecrets<SlackApiTests>().Build();
+                string userSecretValue = config[secretName];
+                if (userSecretValue is not null)
+                    return userSecretValue;
             }
             catch (System.IO.FileNotFoundException)
             {
-                // no user secrets found, probably because we are in GitHub Actions or Azure Pipelines
-                return;
+                string? envSecretValue = Environment.GetEnvironmentVariable(secretName, EnvironmentVariableTarget.Process);
+                if (envSecretValue is not null)
+                    return envSecretValue;
             }
-        }
 
-        public static string GetTokenFromEnvironmentVariable()
-        {
-            return Environment.GetEnvironmentVariable(TOKEN_ENV_VARNAME) ??
-                throw new InvalidOperationException($"environment variables do not contain {TOKEN_ENV_VARNAME}");
+            throw new InvalidOperationException($"Could not load secret: {secretName}");
         }
 
         [Test]
         public void Test_Token_CanBeRetrieved()
         {
-            string token = GetTokenFromEnvironmentVariable();
-            Assert.IsNotNull(token);
+            Assert.IsNotNull(SlackToken);
         }
 
         [Test]
         public void Test_Token_IsProperFormat()
         {
-            string token = GetTokenFromEnvironmentVariable();
-            Assert.That(token.StartsWith("xoxb-"));
+            Assert.That(SlackToken.StartsWith("xoxb-"));
         }
 
         [Test]
         public void Test_Api_GetGeneralMemberCount()
         {
-            string token = GetTokenFromEnvironmentVariable();
-            Task<int> task = SlackAPI.GetGeneralMemberCountAsync(token);
+            Task<int> task = SlackAPI.GetGeneralMemberCountAsync(SlackToken);
             int memberCount = task.Result;
             Console.WriteLine($"The General channel has {memberCount:N0} members");
             Assert.Greater(memberCount, 100);
