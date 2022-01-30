@@ -22,5 +22,5 @@ jobs:
       - name: 🧪 Test
         working-directory: ./src/
         env:
-          cbSlackStatsToken: ${{ secrets.SLACK_TOKEN }}
+          cbSlackStatsToken: ${{ secrets.CB_SLACK_TOKEN }}
         run: dotnet test
