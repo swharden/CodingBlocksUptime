@@ -88,7 +88,7 @@ namespace CbSlackStats.Functions
         {
             const string FILENAME = "general-member-count.png";
 
-            byte[] imageBytes = { 1, 2, 3 };
+            byte[] imageBytes;
             try
             {
                 imageBytes = Plot.GeneratePng(600, 400, counts);
@@ -96,8 +96,7 @@ namespace CbSlackStats.Functions
             catch (Exception ex)
             {
                 log.LogError(ex.ToString());
-                log.LogError(ex.InnerException.ToString());
-                return;
+                throw;
             }
 
             CloudBlobClient blobClient = account.CreateCloudBlobClient();
