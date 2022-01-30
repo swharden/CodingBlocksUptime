@@ -7,10 +7,13 @@ namespace CbSlackStats.Functions.TableEntities
     {
         public int Count { get; set; }
 
-        public GeneralMemberCount()
+        public GeneralMemberCount(int count, DateTime? timestamp = null)
         {
             PartitionKey = "partition1";
-            RowKey = Guid.NewGuid().ToString();
+            RowKey = (timestamp ?? DateTime.UtcNow)
+                .ToString(System.Globalization.CultureInfo.InvariantCulture.DateTimeFormat.UniversalSortableDateTimePattern)
+                .Replace(" ", "T");
+            Count = count;
         }
     }
 }

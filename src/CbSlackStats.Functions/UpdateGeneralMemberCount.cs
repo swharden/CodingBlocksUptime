@@ -24,7 +24,7 @@ namespace CbSlackStats.Functions
             CloudTable statsTable = tableClient.GetTableReference("GeneralMemberCount");
             await statsTable.CreateIfNotExistsAsync();
 
-            TableEntities.GeneralMemberCount entity = new() { Count = memberCount, Timestamp = DateTime.UtcNow };
+            TableEntities.GeneralMemberCount entity = new(memberCount);
             TableOperation insertOrMergeOperation = TableOperation.InsertOrMerge(entity);
             await statsTable.ExecuteAsync(insertOrMergeOperation);
 
