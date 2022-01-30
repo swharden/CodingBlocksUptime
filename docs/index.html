@@ -57,6 +57,7 @@
 				vAxis: {
 					title: 'Number of members in General'
 				},
+				'chartArea': { 'width': '80%', 'height': '80%', 'top': '5%' },
 			};
 
 			var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
@@ -75,7 +76,18 @@
 			class="btn btn-primary btn-sm m-2" role="button">Raw Data</a>
 		<a href='https://github.com/swharden/cb-slack-stats' class="btn btn-primary btn-sm m-2" role="button">Source
 			Code</a>
-		<div id="chart_div" class="border my-3" style="height: 500px;"></div>
+
+		<div class="border my-3 bg-white py-3">
+			<h2>Live Interactive Plot</h2>
+			<div id="chart_div" style="height: 500px;"></div>
+		</div>
+
+		<div class="border my-3 bg-white p-3">
+			<h2>Live Static Image</h2>
+			<a href='https://cbslackstats.z20.web.core.windows.net/general-member-count.png'>
+				<img src='https://cbslackstats.z20.web.core.windows.net/general-member-count.png'>
+			</a>
+		</div>
 	</div>
 </body>
 
