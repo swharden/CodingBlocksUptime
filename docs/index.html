@@ -18,6 +18,7 @@
 			request.responseType = 'text';
 			request.onload = function () {
 				let obj = JSON.parse(request.response);
+				console.log(obj);
 				let updatedDateTime = new Date(obj.updated);
 				setUpdatedMessage(updatedDateTime);
 				let countByDate = obj["records"];
