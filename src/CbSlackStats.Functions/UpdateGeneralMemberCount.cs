@@ -22,9 +22,8 @@ namespace CbSlackStats.Functions
             CloudTable table = await ConnectToTable(storageAccount, log);
             SortedDictionary<DateTime, int> counts = await GetHistoricalCountsFromTable(table, log);
 
-            bool DEBUG_ALWAYS_REGENERATE = true;
             int countPreviously = counts.Values.Last();
-            if (countNow != countPreviously || DEBUG_ALWAYS_REGENERATE)
+            if (countNow != countPreviously)
             {
                 log.LogInformation($"Member count increased from {countNow:N0} to {countPreviously:N0}");
                 counts.Add(DateTime.UtcNow, countNow);
@@ -87,17 +86,7 @@ namespace CbSlackStats.Functions
         private static async Task UploadPlotImage(CloudStorageAccount account, SortedDictionary<DateTime, int> counts, ILogger log)
         {
             const string FILENAME = "general-member-count.png";
-
-            byte[] imageBytes;
-            try
-            {
-                imageBytes = Plot.GeneratePng(600, 400, counts);
-            }
-            catch (Exception ex)
-            {
-                log.LogError(ex.ToString());
-                throw;
-            }
+            byte[] imageBytes = Plot.GeneratePng(600, 400, counts);
 
             CloudBlobClient blobClient = account.CreateCloudBlobClient();
             CloudBlobContainer container = blobClient.GetContainerReference("$web");
