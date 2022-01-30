@@ -4,6 +4,10 @@ This project aims to automate the logging and display of stats related to the Co
 
 ## Developer Notes
 
+### GitHub Actions
+
+Pushing a commit to the main branch of this repository triggers GitHub actions to build, test, and deploy the Azure Functions application into production. See run logs in the [actions tab](https://github.com/swharden/cb-slack-stats/actions) or inspect [ci.yaml](.github/workflows/ci.yaml) for implementation details.
+
 ### Accessing Secrets
 Let's _not_ commit the slack API key to source control. However, this secret must be accessed in a few different places:
 
@@ -28,4 +32,4 @@ dotnet user-secrets set slacktoken xoxb-1234567890
   ```
 
 **Executing Azure Functions**
-  * _not yet implemented_
+  * The API token is stored with the other [Azure Functions App Keys](https://docs.microsoft.com/en-us/azure/azure-functions/security-concepts) and accessed when running in the cloud via environment variables.
