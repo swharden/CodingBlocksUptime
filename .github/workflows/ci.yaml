@@ -12,15 +12,29 @@ jobs:
     steps:
       - name: 🛒 Checkout
         uses: actions/checkout@v2
+
       - name: ✨ Setup .NET 6
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: "6.0.x"
-      - name: 🛠️ Build
+
+      - name: 🛠️ Build Solution
         working-directory: ./src/
         run: dotnet build
+
       - name: 🧪 Test
         working-directory: ./src/
         env:
           CB_SLACK_TOKEN: ${{ secrets.CB_SLACK_TOKEN }}
         run: dotnet test
+
+      - name: 🛠️ Build Release
+        working-directory: ./src/CbSlackStats.Functions/
+        run: dotnet build --configuration Release --no-restore --output ./output
+
+      - name: 🚀 Publish
+        uses: Azure/functions-action@v1
+        with:
+          app-name: "CbSlackStatsFunctionApp"
+          package: "./src/CbSlackStats.Functions/output"
+          publish-profile: ${{ secrets.PUBLISH_PROFILE }}
