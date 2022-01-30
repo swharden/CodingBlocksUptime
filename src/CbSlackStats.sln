@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CbSlackStats", "CbSlackStat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CbSlackStats.Tests", "CbSlackStats.Tests\CbSlackStats.Tests.csproj", "{9D34F096-2ABC-41A1-A926-8F266AF24A02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CbSlackStats.Functions", "CbSlackStats.Functions\CbSlackStats.Functions.csproj", "{449ACF44-DF41-4D5E-AEA9-46AF20523973}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CbSlackStats.Functions", "CbSlackStats.Functions\CbSlackStats.Functions.csproj", "{449ACF44-DF41-4D5E-AEA9-46AF20523973}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
