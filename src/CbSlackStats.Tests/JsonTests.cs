@@ -60,5 +60,29 @@ namespace CbSlackStats.Tests
             Assert.IsNotNull(counts);
             Assert.AreEqual(118, counts.Count);
         }
+
+        private SitePerfRecord GetRandomPerfRecord(Random rand)
+        {
+            return new SitePerfRecord()
+            {
+                DateTime = new DateTime(1985, 09, 24) + TimeSpan.FromDays(rand.NextDouble() * 1e3),
+                ResponseCode = rand.Next(1_000),
+                LoadTime = rand.NextDouble() * 1_000,
+                SizeBytes = rand.Next(1_000_000),
+            };
+        }
+
+        [Test]
+        public void Test_Perf_Write()
+        {
+            Random rand = new(0);
+            SitePerfRecord[] originalPerfs = Enumerable.Range(0, 10)
+                .Select(x => GetRandomPerfRecord(rand))
+                .OrderBy(x => x.DateTime)
+                .ToArray();
+
+            string originalJson = Json.WebsitePerformanceToJson(originalPerfs);
+            Console.WriteLine(originalJson);
+        }
     }
 }

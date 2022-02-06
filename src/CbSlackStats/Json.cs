@@ -46,5 +46,40 @@ namespace CbSlackStats
             }
             return counts;
         }
+
+        public static string WebsitePerformanceToJson(SitePerfRecord[] perfRecords, bool indented = true)
+        {
+            using var stream = new MemoryStream();
+            var options = new JsonWriterOptions() { Indented = indented };
+            using var writer = new Utf8JsonWriter(stream, options);
+
+            writer.WriteStartObject();
+            writer.WriteString("updated", DateTime.UtcNow.ToString("o"));
+
+            writer.WriteStartArray("record value names");
+            writer.WriteStringValue("HTTP Response Code");
+            writer.WriteStringValue("Size (bytes)");
+            writer.WriteStringValue("Load Time (ms)");
+            writer.WriteEndArray();
+
+            writer.WriteStartObject("records");
+            foreach (SitePerfRecord perf in perfRecords)
+            {
+                string timestamp = perf.DateTime.ToString("o").Split(".")[0] + "Z";
+                writer.WriteStartArray(timestamp);
+                writer.WriteNumberValue(perf.ResponseCode);
+                writer.WriteNumberValue(perf.SizeBytes);
+                writer.WriteNumberValue(perf.LoadTime);
+                writer.WriteEndArray();
+            }
+            writer.WriteEndObject();
+
+            writer.WriteEndObject();
+
+            writer.Flush();
+            string json = Encoding.UTF8.GetString(stream.ToArray());
+
+            return json;
+        }
     }
 }
