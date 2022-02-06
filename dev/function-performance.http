@@ -1,0 +1,7 @@
+# variables defined in the `.env` file (same directory as this script) 
+
+## Execute Locally
+
+POST http://localhost:7071/admin/functions/UpdateWebsitePerformance
+Content-Type: application/json
+{}
