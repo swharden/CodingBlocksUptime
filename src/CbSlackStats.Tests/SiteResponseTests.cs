@@ -10,7 +10,7 @@ namespace CbSlackStats.Tests
     internal class SiteResponseTests
     {
         [Test]
-        public async void Test_Website_Response()
+        public async Task Test_Website_Response()
         {
             string url = "http://example.com";
             SitePerfRecord perf = await SitePerf.Measure(url);
