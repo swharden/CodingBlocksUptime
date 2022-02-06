@@ -11,9 +11,9 @@ using Microsoft.WindowsAzure.Storage.Table;
 
 namespace CbSlackStats.Functions
 {
-    public class UpdateWebsiteResponseTime
+    public class UpdateWebsitePerformance
     {
-        [FunctionName("UpdateWebsiteResponseTime")]
+        [FunctionName("UpdateWebsitePerformance")]
         public async Task Run([TimerTrigger("0 0 * * * *")] TimerInfo myTimer, ILogger log)
         {
             string url = "http://example.com";
