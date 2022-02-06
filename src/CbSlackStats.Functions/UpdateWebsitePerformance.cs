@@ -16,7 +16,7 @@ namespace CbSlackStats.Functions
         [FunctionName("UpdateWebsitePerformance")]
         public async Task Run([TimerTrigger("0 0 * * * *")] TimerInfo myTimer, ILogger log)
         {
-            string url = "http://example.com";
+            const string url = "https://www.codingblocks.net/";
             SitePerfRecord perfRecordNow = await SitePerf.Measure(url);
             log.LogInformation($"{url} performance: {perfRecordNow}");
 
