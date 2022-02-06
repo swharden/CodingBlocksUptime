@@ -76,10 +76,8 @@ namespace CbSlackStats.Functions
 
         private static async Task WriteJsonToWebStorage(CloudStorageAccount account, SitePerfRecord[] records, ILogger log)
         {
-            const string FILENAME = "general-member-count.json";
-
+            const string FILENAME = "performance.json";
             string json = Json.WebsitePerformanceToJson(records);
-
             CloudBlobClient blobClient = account.CreateCloudBlobClient();
             CloudBlobContainer container = blobClient.GetContainerReference("$web");
             CloudBlockBlob blockBlob = container.GetBlockBlobReference(FILENAME);
