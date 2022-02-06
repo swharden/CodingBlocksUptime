@@ -10,6 +10,10 @@
 <a href='https://cbslackstats.z20.web.core.windows.net/general-member-count.png'><img src='https://cbslackstats.z20.web.core.windows.net/general-member-count.png'></a>
 </div>
 
+### Raw Data
+* https://cbslackstats.z20.web.core.windows.net/general-member-count.json
+* https://cbslackstats.z20.web.core.windows.net/performance.json
+
 ## Developer Notes
 
 ### GitHub Actions
