@@ -4,15 +4,19 @@
 
 **This project regularly records statistics about the [CodingBlock Slack](https://www.codingblocks.net/slack/) so they can be viewed in historical context.** An Azure Function periodically engages the [Slack API](https://api.slack.com/methods) and logs metrics of interest using blob table storage. Historical records are analyzed and made available as JSON files using blob storage configured as a static website. This repository serves as [GitHub Pages](https://pages.github.com/) index that uses Vanilla JS to retrieve the JSON and display it interactively using [Google Charts](https://developers.google.com/chart/interactive/docs/gallery). A static image is also generated using [ScottPlot](https://scottplot.net/) suitable for inclusion in JavaScript-free static pages.
 
-**Interactive Graph: https://swharden.github.io/cb-slack-stats/**
+## Realtime Data
+
+### Interactive Graphs
+
+* **Webpage:** [**Slack Stats**](https://swharden.github.io/cb-slack-stats) ([raw data](https://cbslackstats.z20.web.core.windows.net/general-member-count.json))
+
+* **Webpage:** [**Website Performance**](https://swharden.github.io/cb-slack-stats/site) ([raw data](https://cbslackstats.z20.web.core.windows.net/performance.json))
+
+### Static Plots
 
 <div align="center">
 <a href='https://cbslackstats.z20.web.core.windows.net/general-member-count.png'><img src='https://cbslackstats.z20.web.core.windows.net/general-member-count.png'></a>
 </div>
-
-### Raw Data
-* https://cbslackstats.z20.web.core.windows.net/general-member-count.json
-* https://cbslackstats.z20.web.core.windows.net/performance.json
 
 ## Developer Notes
 
