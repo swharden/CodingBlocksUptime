@@ -44,8 +44,8 @@
 
 		function drawCurveTypes(perfByDate = null) {
 			var data = new google.visualization.DataTable();
-			data.addColumn('date', 'X');
-			data.addColumn('number', 'Y');
+			data.addColumn('datetime', 'timestamp');
+			data.addColumn('number', 'load time (ms)');
 
 			if (perfByDate) {
 				for (const [key, value] of Object.entries(perfByDate)) {
@@ -60,15 +60,12 @@
 			var options = {
 				legend: { position: 'none' },
 				hAxis: {
-					format: 'MMM yyyy',
-					slantedText: true,
-					slantedTextAngle: 45
 				},
 				vAxis: {
 					title: 'Home Page Load Time (ms)',
 					minValue: 0
 				},
-				'chartArea': { 'width': '80%', 'height': '80%', 'top': '5%' },
+				'chartArea': { 'width': '80%', 'height': '85%', 'top': '5%' },
 			};
 
 			var chart = new google.visualization.LineChart(document.getElementById('chart_div'));

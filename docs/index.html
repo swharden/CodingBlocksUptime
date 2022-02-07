@@ -8,6 +8,15 @@
 		integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 	<title>CodingBlocks Slack Stats</title>
 	<link rel="icon" href="favicon.png" sizes="32x32" />
+	<style>
+		a {
+			text-decoration: none;
+		}
+
+		a:hover {
+			text-decoration: underline;
+		}
+	</style>
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	<script>
 		google.charts.load('current', { packages: ['corechart', 'line'] });
@@ -31,7 +40,7 @@
 			let date = updatedDateTime.toDateString();
 			let time = updatedDateTime.toLocaleTimeString();
 			let age = Math.floor((Date.now() - updatedDateTime) / 1000 / 60);
-			document.getElementById("updatedMessage").innerText = `Last updated on ${date} at ${time} (${age} minutes ago)`;
+			document.getElementById("updatedMessage").innerHTML = `Last updated on ${date} <br> at ${time} (${age} minutes ago)`;
 		}
 
 		function drawCurveTypes(countByDate = null) {
@@ -50,14 +59,11 @@
 			var options = {
 				legend: { position: 'none' },
 				hAxis: {
-					format: 'MMM yyyy',
-					slantedText: true,
-					slantedTextAngle: 45
 				},
 				vAxis: {
 					title: 'Number of members in General'
 				},
-				'chartArea': { 'width': '80%', 'height': '80%', 'top': '5%' },
+				'chartArea': { 'width': '75%', 'height': '85%', 'top': '5%' },
 			};
 
 			var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
@@ -76,18 +82,18 @@
 
 <body class="bg-light" onload="getLatestData();">
 	<div class="container my-3 p-3 text-center">
-		<h1 class="display-4">CodingBlocks Slack Stats</h1>
-		<div id="updatedMessage" class="">Last updated on 2021-01-30 at 15:30 UTC (23 minutes ago)</div>
-		<a href="https://www.codingblocks.net/slack/" class="btn btn-primary btn-sm m-2" role="button">Join the
-			Slack</a>
-		<a href='https://cbslackstats.z20.web.core.windows.net/general-member-count.json'
-			class="btn btn-primary btn-sm m-2" role="button">Raw Data</a>
-		<a href='https://github.com/swharden/cb-slack-stats' class="btn btn-primary btn-sm m-2" role="button">Source
-			Code</a>
+		<h1 class="display-4">CodingBlocks.NET</h1>
+		<h1 class="display-5">Slack Stats</h1>
 
 		<div class="border my-3 bg-white py-3 rounded shadow-sm">
 			<div id="chart_div" style="height: 500px;"></div>
 		</div>
+
+		<div id="updatedMessage" class="text-muted p-3">Loading...</div>
+
+		<a href='https://www.codingblocks.net/slack/' class="p-3">Join the Slack</a>
+		<a href='https://cbslackstats.z20.web.core.windows.net/general-member-count.json' class="p-3">Raw Data</a>
+		<a href='https://github.com/swharden/cb-slack-stats' class="p-3">Source Code</a>
 	</div>
 </body>
 
