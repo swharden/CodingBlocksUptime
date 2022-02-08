@@ -31,7 +31,8 @@
 				let updatedDateTime = new Date(obj.updated);
 				setUpdatedMessage(updatedDateTime);
 				let countByDate = obj["records"];
-				drawCurveTypes(countByDate);
+				plotData(countByDate, document.getElementById('chartAll'));
+				plotData(countByDate, document.getElementById('chartRecent'), 90);
 			};
 			request.send();
 		}
@@ -43,7 +44,7 @@
 			document.getElementById("updatedMessage").innerHTML = `Last updated on ${date} <br> at ${time} (${age} minutes ago)`;
 		}
 
-		function drawCurveTypes(countByDate = null) {
+		function plotData(countByDate = null, chartElement = null, maxAgeDays = Infinity) {
 			var data = new google.visualization.DataTable();
 			data.addColumn('date', 'X');
 			data.addColumn('number', 'Count');
@@ -52,7 +53,9 @@
 				for (const [key, value] of Object.entries(countByDate)) {
 					let dt = new Date(key);
 					let count = parseInt(value);
-					data.addRow([dt, count]);
+					let ageDays = Math.floor((Date.now() - dt) / 1000 / 60 / 60 / 24); // days
+					if (ageDays < maxAgeDays)
+						data.addRow([dt, count]);
 				}
 			}
 
@@ -63,10 +66,14 @@
 				vAxis: {
 					title: 'Number of members in General'
 				},
-				'chartArea': { 'width': '75%', 'height': '85%', 'top': '5%' },
+				'chartArea': {
+					'width': '75%',
+					'height': '85%',
+					'top': '5%'
+				},
 			};
 
-			var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+			var chart = new google.visualization.LineChart(chartElement);
 			chart.draw(data, options);
 		}
 	</script>
@@ -86,14 +93,21 @@
 		<h1 class="display-5">Slack Stats</h1>
 
 		<div class="border my-3 bg-white py-3 rounded shadow-sm">
-			<div id="chart_div" style="height: 500px;"></div>
+			<h1>Last 90 Days</h1>
+			<div id="chartRecent" style="height: 500px;"></div>
+		</div>
+
+		<div class="border my-3 bg-white py-3 rounded shadow-sm">
+			<h1>Since 2019</h1>
+			<div id="chartAll" style="height: 500px;"></div>
 		</div>
 
 		<div id="updatedMessage" class="text-muted p-3">Loading...</div>
 
 		<a href='https://www.codingblocks.net/slack/' class="p-3">Join the Slack</a>
 		<a href='https://cbslackstats.z20.web.core.windows.net/general-member-count.json' class="p-3">Raw Data</a>
-		<a href='https://github.com/swharden/cb-slack-stats' class="p-3">Source Code</a>
+		<a href='site' class="p-3">Website Performance</a>
+		<a href='https://github.com/swharden/cb-slack-stats' class="p-3">Source on GitHub</a>
 	</div>
 </body>
 
