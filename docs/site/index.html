@@ -46,27 +46,49 @@
 		function drawCurveTypes(perfByDate = null) {
 			var data = new google.visualization.DataTable();
 			data.addColumn('datetime', 'timestamp');
-			data.addColumn('number', 'load time (ms)');
+			data.addColumn('number', 'response time (ms)');
+			data.addColumn('number', '24hr mean (ms)');
+			data.addColumn('number', '24hr max (ms)');
 
+			const avgPointCount = 24;
+			let loadTimes = [];
 			if (perfByDate) {
-				for (const [key, value] of Object.entries(perfByDate)) {
-					let dt = new Date(key);
-					let httpCode = parseInt(value[0])
-					let sizeBytes = parseInt(value[1])
-					let loadTime = parseFloat(value[2])
-					data.addRow([dt, loadTime]);
+				let dates = Object.keys(perfByDate);
+				for (let i = 0; i < dates.length; i++) {
+					let dt = new Date(dates[i]);
+					let perf = perfByDate[dates[i]];
+					let httpCode = parseInt(perf[0]);
+					let sizeBytes = parseInt(perf[1]);
+					let loadTime = parseFloat(perf[2]);
+					loadTimes.push(loadTime);
+
+					while (loadTimes.length > avgPointCount) {
+						loadTimes.shift();
+					}
+
+					let meanTime = NaN;
+					let maxTime = NaN;
+					if (loadTimes.length == avgPointCount) {
+						meanTime = loadTimes.reduce((previousValue, currentValue) => previousValue + currentValue, 0) / loadTimes.length;
+						maxTime = loadTimes.reduce((previousValue, currentValue) => Math.max(previousValue, currentValue), 0);
+					}
+
+					data.addRow([dt, loadTime, meanTime, maxTime]);
 				}
 			}
 
 			var options = {
-				legend: { position: 'none' },
-				hAxis: {
-				},
+				legend: { position: 'bottom' },
 				vAxis: {
 					title: 'Home Page Load Time (ms)',
 					minValue: 0
 				},
 				'chartArea': { 'width': '80%', 'height': '85%', 'top': '5%' },
+				series: [
+					{ color: '#666666', pointSize: 5, lineWidth: 0, dataOpacity: .2 },
+					{ color: 'blue', enableInteractivity: false },
+					{ color: 'red', enableInteractivity: false },
+				],
 			};
 
 			var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
