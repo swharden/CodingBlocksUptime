@@ -11,11 +11,14 @@ foreach (JsonProperty el in document.RootElement.GetProperty("records").Enumerat
     dtLast = dt;
     int code = int.Parse(el.Value[0].ToString());
     int bytes = int.Parse(el.Value[1].ToString());
-    double loadTIme = double.Parse(el.Value[2].ToString());
+    double loadTime = double.Parse(el.Value[2].ToString());
 
     if (diff.TotalHours > 999)
         continue;
 
     if (diff.TotalHours > 1.5)
-        Console.WriteLine($"Missing record: {loadTIme}, diff: {diff}");
+        Console.WriteLine($"Missing record: {el.Name}, diff: {diff}");
+
+    if (code != 200)
+        Console.WriteLine($"Bad code record: {el.Name}, code: {code}");
 }
