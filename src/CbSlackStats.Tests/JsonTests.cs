@@ -58,7 +58,7 @@ namespace CbSlackStats.Tests
             SortedDictionary<DateTime, int> counts = Json.DatedCountsFromJson(json);
 
             Assert.IsNotNull(counts);
-            Assert.AreEqual(118, counts.Count);
+            Assert.AreEqual(198, counts.Count);
         }
 
         private SitePerfRecord GetRandomPerfRecord(Random rand)
