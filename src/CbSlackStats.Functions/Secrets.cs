@@ -10,21 +10,29 @@ namespace CbSlackStats.Functions
         /// </summary>
         internal static string GetSecret(string secretName)
         {
-            try
+            string azureFunctionsId = Environment.GetEnvironmentVariable("WEBSITE_INSTANCE_ID");
+            bool isRunningLocally = string.IsNullOrEmpty(azureFunctionsId);
+
+            if (isRunningLocally)
             {
                 var config = new ConfigurationBuilder().AddUserSecrets<UpdateGeneralMemberCount>().Build();
-                string userSecretValue = config[secretName];
-                if (userSecretValue is not null)
-                    return userSecretValue;
+                string secretValue = config[secretName];
+
+                if (string.IsNullOrEmpty(secretValue))
+                    throw new InvalidOperationException($"Local user secret '{secretName}' was not found");
+
+                return secretValue;
             }
-            catch (System.IO.FileNotFoundException)
+            else
             {
-                string envSecretValue = Environment.GetEnvironmentVariable(secretName, EnvironmentVariableTarget.Process);
-                if (envSecretValue is not null)
-                    return envSecretValue;
+                string secretValue = Environment.GetEnvironmentVariable(secretName, EnvironmentVariableTarget.Process);
+
+                if (string.IsNullOrEmpty(secretValue))
+                    throw new InvalidOperationException($"Environment secret '{secretName}' was not found");
+
+                return secretValue;
             }
 
-            throw new InvalidOperationException($"Could not load secret: {secretName}");
         }
     }
 }
