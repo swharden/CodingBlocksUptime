@@ -56,7 +56,7 @@ namespace CbSlackStats.Functions
         {
             List<SitePerfRecord> perfRecords = new();
 
-            TableQuery<WebsitePerformance> query = new();
+            TableQuery<WebsitePerformance> query = new() { TakeCount = 100_000 };
             foreach (WebsitePerformance tableRecord in await table.ExecuteQuerySegmentedAsync(query, null))
             {
                 SitePerfRecord perf = new()
