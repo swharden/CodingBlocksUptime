@@ -20,5 +20,5 @@ foreach (JsonProperty el in document.RootElement.GetProperty("records").Enumerat
         Console.WriteLine($"Missing record: {el.Name}, diff: {diff}");
 
     if (code != 200)
-        Console.WriteLine($"Bad code record: {el.Name}, code: {code}");
+        Console.WriteLine($"Response code {code}: {el.Name}");
 }
