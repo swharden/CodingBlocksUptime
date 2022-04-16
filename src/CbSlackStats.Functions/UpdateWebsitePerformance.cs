@@ -54,24 +54,35 @@ namespace CbSlackStats.Functions
 
         private static async Task<SitePerfRecord[]> GetHistoricalRecords(CloudTable table, ILogger log)
         {
-            List<SitePerfRecord> perfRecords = new();
+            TableQuery<WebsitePerformance> tableQuery = new() { TakeCount = 100_000 };
+            TableContinuationToken continuationToken = default;
+            List<WebsitePerformance> results = new();
 
-            TableQuery<WebsitePerformance> query = new() { TakeCount = 100_000 };
-            foreach (WebsitePerformance tableRecord in await table.ExecuteQuerySegmentedAsync(query, null))
+            do
             {
-                SitePerfRecord perf = new()
-                {
-                    DateTime = tableRecord.DateTime,
-                    ResponseCode = tableRecord.ResponseCode,
-                    LoadTime = tableRecord.LoadTime,
-                    SizeBytes = tableRecord.SizeBytes,
-                };
-                perfRecords.Add(perf);
-            }
+                var queryResult = await table.ExecuteQuerySegmentedAsync(tableQuery, continuationToken);
+                results.AddRange(queryResult.Results);
+                continuationToken = queryResult.ContinuationToken;
+            } while (continuationToken is not null);
 
-            SitePerfRecord[] sortedPerfRecords = perfRecords.OrderBy(x => x.DateTime).ToArray();
+            SitePerfRecord[] sortedPerfRecords = results
+                .Select(x => CreatePerfRecord(x))
+                .OrderBy(x => x.DateTime)
+                .ToArray();
+
             log.LogInformation($"Read and sorted {sortedPerfRecords.Length} records from the table.");
             return sortedPerfRecords;
+        }
+
+        private static SitePerfRecord CreatePerfRecord(WebsitePerformance x)
+        {
+            return new SitePerfRecord()
+            {
+                DateTime = x.DateTime,
+                ResponseCode = x.ResponseCode,
+                LoadTime = x.LoadTime,
+                SizeBytes = x.SizeBytes,
+            };
         }
 
         private static async Task WriteJsonToWebStorage(CloudStorageAccount account, SitePerfRecord[] records, ILogger log)
