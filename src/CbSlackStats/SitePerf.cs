@@ -12,19 +12,32 @@ namespace CbSlackStats
     {
         public static async Task<SitePerfRecord> Measure(string url)
         {
-            HttpClient client = new();
-            Stopwatch sw = Stopwatch.StartNew();
-            using HttpResponseMessage response = await client.GetAsync(url);
-            sw.Stop();
-            string contentText = await response.Content.ReadAsStringAsync();
-
-            return new SitePerfRecord()
+            try
             {
-                DateTime = DateTime.UtcNow,
-                LoadTime = sw.Elapsed.TotalMilliseconds,
-                SizeBytes = contentText.Length,
-                ResponseCode = (int)response.StatusCode,
-            };
+                HttpClient client = new();
+                Stopwatch sw = Stopwatch.StartNew();
+                using HttpResponseMessage response = await client.GetAsync(url);
+                sw.Stop();
+                string contentText = await response.Content.ReadAsStringAsync();
+
+                return new SitePerfRecord()
+                {
+                    DateTime = DateTime.UtcNow,
+                    LoadTime = sw.Elapsed.TotalMilliseconds,
+                    SizeBytes = contentText.Length,
+                    ResponseCode = (int)response.StatusCode,
+                };
+            }
+            catch (Exception)
+            {
+                return new SitePerfRecord()
+                {
+                    DateTime = DateTime.UtcNow,
+                    LoadTime = 0,
+                    SizeBytes = 0,
+                    ResponseCode = 0,
+                };
+            }
         }
     }
 }
