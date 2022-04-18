@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using CbSlackStats.Functions.TableEntities;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
@@ -28,7 +30,6 @@ namespace CbSlackStats.Functions
                 log.LogInformation($"Member count increased from {countNow:N0} to {countPreviously:N0}");
                 counts.Add(DateTime.UtcNow, countNow);
                 await AddRecordToTable(table, countNow, log);
-                await UploadPlotImage(storageAccount, counts, log);
             }
             else
             {
@@ -36,6 +37,11 @@ namespace CbSlackStats.Functions
             }
 
             await WriteJsonToWebStorage(storageAccount, counts, log);
+
+            if (countNow != countPreviously)
+            {
+                await UploadPlotImage(storageAccount, counts, log);
+            }
         }
 
         private async static Task<int> GetCurrentCountUsingSlackAPI(ILogger log)
@@ -86,8 +92,30 @@ namespace CbSlackStats.Functions
         private static async Task UploadPlotImage(CloudStorageAccount account, SortedDictionary<DateTime, int> counts, ILogger log)
         {
             const string FILENAME = "general-member-count.png";
-            byte[] imageBytes = Plot.GeneratePng(600, 400, counts);
 
+            // download feed XML
+            string feedUrl = "https://www.codingblocks.net/feed/podcast";
+            log.LogInformation($"Downloading: {feedUrl}");
+            using HttpClient client = new();
+            using HttpResponseMessage response = await client.GetAsync(feedUrl);
+            using HttpContent content = response.Content;
+            byte[] bytes = await content.ReadAsByteArrayAsync();
+            string feedXml = System.Text.Encoding.UTF8.GetString(bytes);
+
+            // build list of episodes by date
+            Dictionary<DateTime, string> episodes = new();
+            XDocument doc = XDocument.Parse(feedXml);
+            foreach (XElement itemELement in doc.Descendants("item"))
+            {
+                DateTime datetime = DateTime.Parse(itemELement.Element("pubDate")!.Value);
+                string title = itemELement.Element("title")!.Value;
+                episodes[datetime] = title;
+            }
+
+            // create figure
+            byte[] imageBytes = Plot.GeneratePng(800, 600, counts, episodes);
+
+            // save image to blog storage
             CloudBlobClient blobClient = account.CreateCloudBlobClient();
             CloudBlobContainer container = blobClient.GetContainerReference("$web");
             CloudBlockBlob blockBlob = container.GetBlockBlobReference(FILENAME);
