@@ -22,8 +22,13 @@
 	<script>
 		google.charts.load('current', { packages: ['corechart', 'line'] });
 
-		function getLatestData(url = 'https://cbslackstats.z20.web.core.windows.net/performance.json') {
-			let request = new XMLHttpRequest();
+		function getLatestData() {
+
+			const isDevEnvironment = window.location.href.includes("localhost:") || window.location.href.includes("127.0.0.1:");
+			const url = isDevEnvironment ? '../../dev/sample-data/performance.json' : 'https://cbslackstats.z20.web.core.windows.net/performance.json';
+
+			// TODO: use fetch
+			const request = new XMLHttpRequest();
 			request.open('GET', url);
 			request.responseType = 'text';
 			request.onload = function () {
