@@ -24,8 +24,10 @@
 
 		function getLatestData() {
 
-			const isDevEnvironment = window.location.href.includes("localhost:") || window.location.href.includes("127.0.0.1:");
-			const url = isDevEnvironment ? '../../dev/sample-data/performance.json' : 'https://cbslackstats.z20.web.core.windows.net/performance.json';
+			const isDevEnvironment = window.location.href.includes("127.0.0.1:");
+			const url = isDevEnvironment
+				? '../../dev/sample-data/performance.json'
+				: 'https://cbslackstats.z20.web.core.windows.net/performance.json';
 
 			// TODO: use fetch
 			const request = new XMLHttpRequest();
@@ -45,34 +47,43 @@
 			let date = updatedDateTime.toDateString();
 			let time = updatedDateTime.toLocaleTimeString();
 			let age = Math.floor((Date.now() - updatedDateTime) / 1000 / 60);
-			document.getElementById("updatedMessage").innerHTML = `Last updated on ${date} <br> at ${time} (${age} minutes ago)`;
+			document.getElementById("updatedMessage").innerHTML =
+				`Last updated on ${date} <br> at ${time} (${age.toLocaleString()} minutes ago)`;
 		}
 
 		function drawCurveTypes(perfByDate = null) {
 			var data = new google.visualization.DataTable();
 			data.addColumn('datetime', 'timestamp');
-			data.addColumn('number', 'response time (ms)');
-			data.addColumn('number', '24hr mean (ms)');
-			data.addColumn('number', '24hr max (ms)');
+			data.addColumn('number', 'response time');
+			data.addColumn('number', '24hr mean');
+			data.addColumn('number', '24hr max');
 
 			const avgPointCount = 24;
 			let loadTimes = [];
 			if (perfByDate) {
 				let dates = Object.keys(perfByDate);
+				let failDates = [];
+				let meanTime = NaN;
+				let maxTime = NaN;
 				for (let i = 0; i < dates.length; i++) {
 					let dt = new Date(dates[i]);
 					let perf = perfByDate[dates[i]];
 					let httpCode = parseInt(perf[0]);
 					let sizeBytes = parseInt(perf[1]);
-					let loadTime = parseFloat(perf[2]);
+					let loadTime = parseFloat(perf[2]) / 1000;
+
+					const maxLoadTime = 20;
+					if (loadTime == 0 || loadTime > maxLoadTime) {
+						loadTime = maxLoadTime;
+						failDates.unshift(dt);
+					}
+
 					loadTimes.push(loadTime);
 
 					while (loadTimes.length > avgPointCount) {
 						loadTimes.shift();
 					}
 
-					let meanTime = NaN;
-					let maxTime = NaN;
 					if (loadTimes.length == avgPointCount) {
 						meanTime = loadTimes.reduce((previousValue, currentValue) => previousValue + currentValue, 0) / loadTimes.length;
 						maxTime = loadTimes.reduce((previousValue, currentValue) => Math.max(previousValue, currentValue), 0);
@@ -80,12 +91,34 @@
 
 					data.addRow([dt, loadTime, meanTime, maxTime]);
 				}
+
+				// load time
+				document.getElementById("loadTime").innerText = (meanTime * 1000).toFixed(1) + " ms";
+
+				// uptime
+				const successCount = dates.length - failDates.length;
+				const successRatePercent = successCount / dates.length * 100;
+				document.getElementById("uptimePercent").innerText = successRatePercent.toFixed(3) + "%";
+				document.getElementById("uptimeDetails").innerText = `${successCount} of ${dates.length} attempts`;
+
+				// last event
+				const lastFailAgeDays = (Date.now() - failDates[0]) / 1000 / 60 / 60 / 24;
+				document.getElementById("lastEventMessage").innerText = `${failDates[0].toUTCString()} (${lastFailAgeDays.toFixed(1)} days ago)`;
+
+				// downtime list
+				const ul = document.getElementById("downtimeEventList");
+				ul.innerHTML = '';
+				failDates.forEach(failDate => {
+					const li = document.createElement("div");
+					li.innerText = failDate.toUTCString();
+					ul.appendChild(li);
+				});
 			}
 
 			var options = {
 				legend: { position: 'bottom' },
 				vAxis: {
-					title: 'Home Page Load Time (ms)',
+					title: 'Home Page Load Time (sec)',
 					minValue: 0
 				},
 				'chartArea': { 'width': '80%', 'height': '85%', 'top': '5%' },
@@ -118,9 +151,39 @@
 		<div class="border my-3 bg-white py-3 rounded shadow-sm">
 			<div id="chart_div" style="height: 500px;"></div>
 		</div>
+		<div class="mx-auto text-muted" style="font-size: .8em;">
+			Home page load time measured once per hour.
+			Responses >20 sec or failures are reported as 20 sec load times.
+			Data between 8PM March 28 and 10PM April 1 2022 is missing due to an authentication error preventing
+			logging during this period. Performance of the website during this time is unknown.
+		</div>
 
+		<h3 class="mb-2 pb-0 mt-5">Home Page Load Time</h3>
+		<div class="border d-inline-block px-3 py-2 rounded bg-primary text-light shadow-sm">
+			<div class="display-4" id="loadTime">Loading...</div>
+			<div style="opacity: .5;">24 hour mean</div>
+		</div>
+
+		<h3 class="mb-2 pb-0 mt-5">Site Reliability</h3>
+		<div class="border d-inline-block px-3 py-2 rounded bg-success text-light shadow-sm">
+			<div class="display-4" id="uptimePercent">Loading...</div>
+			<div style="opacity: .5;" id="uptimeDetails"></div>
+		</div>
+
+		<h3 class="mb-2 pb-0 mt-5">Last Event</h3>
+		<div id="lastEventMessage">
+			Loading...
+		</div>
+
+		<h3 class="mb-2 pb-0 mt-5">Downtime Events</h3>
+		<div>
+			<div class="text-start d-inline-block lh-lg" id="downtimeEventList">
+				Loading...
+			</div>
+		</div>
+
+		<h3 class="mb-0 pb-0 mt-5">Status</h3>
 		<div id="updatedMessage" class="text-muted p-3">Loading...</div>
-
 		<a href='https://cbslackstats.z20.web.core.windows.net/performance.json' class="p-3">Raw Data</a>
 		<a href='https://github.com/swharden/cb-slack-stats' class="p-3">Source Code</a>
 	</div>
