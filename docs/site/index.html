@@ -54,7 +54,6 @@
 		function drawCurveTypes(perfByDate = null) {
 			var data = new google.visualization.DataTable();
 			data.addColumn('datetime', 'timestamp');
-			data.addColumn('number', 'response time');
 			data.addColumn('number', '24hr mean');
 			data.addColumn('number', '24hr max');
 
@@ -89,7 +88,7 @@
 						maxTime = loadTimes.reduce((previousValue, currentValue) => Math.max(previousValue, currentValue), 0);
 					}
 
-					data.addRow([dt, loadTime, meanTime, maxTime]);
+					data.addRow([dt, meanTime, maxTime]);
 				}
 
 				// load time
@@ -123,7 +122,6 @@
 				},
 				'chartArea': { 'width': '80%', 'height': '85%', 'top': '5%' },
 				series: [
-					{ color: '#666666', pointSize: 5, lineWidth: 0, dataOpacity: .2 },
 					{ color: 'blue', enableInteractivity: false },
 					{ color: 'red', enableInteractivity: false },
 				],
