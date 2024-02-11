@@ -2,12 +2,10 @@
 
 public class DatabaseTests
 {
-    const string DB_FILE = "../../../../../dev/SampleData/codingblocks.net.csv";
-
     [Test]
     public void Test_Database_FromCsv()
     {
-        string text = File.ReadAllText(DB_FILE);
+        string text = File.ReadAllText(SampleData.DB_FILE);
         Database db = Database.FromCsv(text);
         db.Records.Count.Should().BeGreaterThan(17_000);
     }
@@ -15,7 +13,7 @@ public class DatabaseTests
     [Test]
     public void Test_Database_ToCsv()
     {
-        string text1 = File.ReadAllText(DB_FILE);
+        string text1 = File.ReadAllText(SampleData.DB_FILE);
         Database db1 = Database.FromCsv(text1);
 
         string text2 = db1.ToCsv();

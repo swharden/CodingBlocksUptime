@@ -1,6 +1,6 @@
 ﻿namespace CodingBlocksUptime;
 
-public record DatabaseRecord(DateTime Date, int Code, int Size, double Time)
+public record DatabaseRecord(DateTime DateTime, int Code, int Size, double Time)
 {
     public static DatabaseRecord? FromCsvLine(string line)
     {
@@ -12,7 +12,7 @@ public record DatabaseRecord(DateTime Date, int Code, int Size, double Time)
             return null;
 
         return new DatabaseRecord(
-            Date: DateTime.Parse(parts[0]).ToUniversalTime(),
+            DateTime: DateTime.Parse(parts[0]).ToUniversalTime(),
             Code: int.Parse(parts[1]),
             Size: int.Parse(parts[2]),
             Time: double.Parse(parts[3]));
@@ -20,6 +20,6 @@ public record DatabaseRecord(DateTime Date, int Code, int Size, double Time)
 
     public string ToCsvLine()
     {
-        return $"{Date},{Code},{Size},{Time}";
+        return $"{DateTime},{Code},{Size},{Time}";
     }
 }

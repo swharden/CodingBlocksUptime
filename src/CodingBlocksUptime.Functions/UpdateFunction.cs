@@ -2,6 +2,7 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
+using System.Text;
 
 namespace CodingBlocksUptime.Functions;
 
@@ -9,7 +10,8 @@ public class UpdateFunction(ILoggerFactory loggerFactory)
 {
     private readonly ILogger Logger = loggerFactory.CreateLogger<UpdateFunction>();
     private const string DB_FILENAME = "codingblocks.net.csv";
-    private const string LOG_FILENAME = "codingblocks.net-log.txt";
+    private const string STATUS_FILENAME = "codingblocks.net-status.txt";
+    private const string OUTAGE_FILENAME = "codingblocks.net-outage.txt";
 
     [Function("UpdateFunction")]
     public void Run(
@@ -28,7 +30,8 @@ public class UpdateFunction(ILoggerFactory loggerFactory)
         Database db = LoadDatabaseFromFile(containerClient);
         db.Records.Add(response.DatabaseRecord);
         SaveDatabaseToFile(db, containerClient);
-        CreateLogFile(containerClient);
+        CreateStatusFile(db, containerClient);
+        CreateOutageFile(db, containerClient);
         Logger.LogInformation("Function execution complete.");
     }
 
@@ -49,7 +52,7 @@ public class UpdateFunction(ILoggerFactory loggerFactory)
         BlobClient blobClient = containerClient.GetBlobClient(DB_FILENAME);
         using MemoryStream memoryStream = new();
         blobClient.DownloadTo(memoryStream);
-        string contentString = System.Text.Encoding.UTF8.GetString(memoryStream.ToArray());
+        string contentString = Encoding.UTF8.GetString(memoryStream.ToArray());
         Logger.LogInformation("Read {LENGTH} bytes.", contentString.Length);
 
         Database db = Database.FromCsv(contentString);
@@ -60,7 +63,7 @@ public class UpdateFunction(ILoggerFactory loggerFactory)
     private void SaveDatabaseToFile(Database db, BlobContainerClient containerClient)
     {
         string txt = db.ToCsv();
-        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(txt);
+        byte[] bytes = Encoding.UTF8.GetBytes(txt);
         Logger.LogInformation("Writing {LENGTH} bytes...", bytes.Length);
 
         using MemoryStream ms = new(bytes);
@@ -69,15 +72,27 @@ public class UpdateFunction(ILoggerFactory loggerFactory)
         blobClient.SetHttpHeaders(new BlobHttpHeaders() { ContentType = "text/plain" });
     }
 
-    private void CreateLogFile(BlobContainerClient containerClient)
+    private void CreateStatusFile(Database db, BlobContainerClient containerClient)
     {
-        string text = DateTime.UtcNow.ToUniversalTime().ToString("o");
-        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(text);
-        Logger.LogInformation("Writing {LENGTH} byte log file...", bytes.Length);
+        string text = db.Records.Last().ToCsvLine();
+        byte[] bytes = Encoding.UTF8.GetBytes(text);
+        Logger.LogInformation("Writing {LENGTH} byte status file...", bytes.Length);
 
-        using MemoryStream ms2 = new(bytes);
-        BlobClient blobClient = containerClient.GetBlobClient(LOG_FILENAME);
-        blobClient.Upload(ms2, overwrite: true);
+        using MemoryStream ms = new(bytes);
+        BlobClient blobClient = containerClient.GetBlobClient(STATUS_FILENAME);
+        blobClient.Upload(ms, overwrite: true);
+        blobClient.SetHttpHeaders(new BlobHttpHeaders() { ContentType = "text/plain" });
+    }
+
+    private void CreateOutageFile(Database db, BlobContainerClient containerClient)
+    {
+        string text = OutageAnalysis.GetOutageReport(db);
+        byte[] bytes = Encoding.UTF8.GetBytes(text);
+        Logger.LogInformation("Writing {LENGTH} byte outage file...", bytes.Length);
+
+        using MemoryStream ms = new(bytes);
+        BlobClient blobClient = containerClient.GetBlobClient(OUTAGE_FILENAME);
+        blobClient.Upload(ms, overwrite: true);
         blobClient.SetHttpHeaders(new BlobHttpHeaders() { ContentType = "text/plain" });
     }
 }
