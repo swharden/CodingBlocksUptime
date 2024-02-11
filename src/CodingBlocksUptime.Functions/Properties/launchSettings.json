@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "CodingBlocksUptime.Functions": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7054",
+      "launchBrowser": false
+    }
+  }
+}

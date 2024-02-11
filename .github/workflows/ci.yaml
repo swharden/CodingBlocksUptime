@@ -2,6 +2,15 @@ name: CI
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - "src/**"
+    branches:
+      - main
+
+env:
+  SOLUTION_FILE: "src/CodingBlocksUptime.sln"
+  DOTNET_VERSION: "8.0.x"
 
 jobs:
   ci:
@@ -9,30 +18,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 🛒 Checkout
-        uses: actions/checkout@v2
-
-      - name: ✨ Setup .NET 6
-        uses: actions/setup-dotnet@v1
+        uses: actions/checkout@v3
+      - name: ✨ Setup .NET ${{ env.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: "6.0.x"
-
-      - name: 🛠️ Build Solution
-        working-directory: ./src/
-        run: dotnet build
-
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: 🚚 Restore
+        run: dotnet restore "${{ env.SOLUTION_FILE }}"
+      - name: 🛠️ Build
+        run: dotnet build "${{ env.SOLUTION_FILE }}" --configuration Release
       - name: 🧪 Test
-        working-directory: ./src/
-        env:
-          CB_SLACK_TOKEN: ${{ secrets.CB_SLACK_TOKEN }}
-        run: dotnet test
-
-      - name: 🛠️ Build Release
-        working-directory: ./src/CbSlackStats.Functions/
-        run: dotnet build --configuration Release --no-restore --output ./output
-
-      - name: 🚀 Publish
-        uses: Azure/functions-action@v1
-        with:
-          app-name: "CbSlackStatsFunctionApp"
-          package: "./src/CbSlackStats.Functions/output"
-          publish-profile: ${{ secrets.PUBLISH_PROFILE }}
+        run: dotnet test "${{ env.SOLUTION_FILE }}" --configuration Release --verbosity minimal
