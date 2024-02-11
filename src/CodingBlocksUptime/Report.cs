@@ -10,6 +10,11 @@ public static class Report
         List<Outage> outages = GetOutages(db);
         outages.Reverse();
 
+        int recordsDown = db.Records.Where(x => x.Code != 200).Count();
+        int recordsTotal = db.Records.Count;
+        int recordsUp = recordsTotal - recordsDown;
+        double uptimePercent = 100.0 * recordsUp / recordsTotal;
+
         using MemoryStream stream = new();
         JsonWriterOptions options = new() { Indented = true };
         using Utf8JsonWriter writer = new(stream, options);
@@ -20,6 +25,11 @@ public static class Report
         writer.WriteNumber("lastSize", db.Records.Last().Size);
         writer.WriteNumber("lastTime", db.Records.Last().Time);
         writer.WriteBoolean("isCurrentOutage", db.Records.Last().Code != 200);
+        writer.WriteNumber("recordsUp", recordsUp);
+        writer.WriteNumber("recordsDown", recordsDown);
+        writer.WriteNumber("recordsTotal", recordsTotal);
+        writer.WriteNumber("uptimePercent", uptimePercent);
+
         writer.WriteStartArray("Outages");
         foreach (var outage in outages)
         {
