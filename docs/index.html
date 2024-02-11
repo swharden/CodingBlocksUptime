@@ -2,130 +2,53 @@
 <html lang="en">
 
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-		integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-	<title>CodingBlocks Slack Stats</title>
-	<meta name="robots" content="all">
-	<meta name="description" content="Live statistics about the CodingBlocks Slack">
-	<link rel="icon" href="favicon.png" sizes="32x32" />
-	<style>
-		a {
-			text-decoration: none;
-		}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CodingBlocks.NET Uptime Monitor</title>
+    <link rel="icon" href="favicon.png" sizes="32x32" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        a {
+            text-decoration: none;
+        }
 
-		a:hover {
-			text-decoration: underline;
-		}
-	</style>
-	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-	<script>
-		google.charts.load('current', { packages: ['corechart', 'line'] });
-
-		function getLatestData() {
-
-			const isDevEnvironment = window.location.href.includes("127.0.0.1:");
-			const url = isDevEnvironment
-				? '../dev/sample-data/general-member-count.json'
-				: 'https://cbslackstats.z20.web.core.windows.net/general-member-count.json';
-
-			// TODO: use fetch
-			let request = new XMLHttpRequest();
-			request.open('GET', url);
-			request.responseType = 'text';
-			request.onload = function () {
-				let obj = JSON.parse(request.response);
-				console.log(obj);
-				let updatedDateTime = new Date(obj.updated);
-				setUpdatedMessage(updatedDateTime);
-				let countByDate = obj["records"];
-				plotData(countByDate, document.getElementById('chartRecent'), 90, 3);
-				plotData(countByDate, document.getElementById('chartAll'), Infinity, 0);
-			};
-			request.send();
-		}
-
-		function setUpdatedMessage(updatedDateTime) {
-			let date = updatedDateTime.toDateString();
-			let time = updatedDateTime.toLocaleTimeString();
-			let age = Math.floor((Date.now() - updatedDateTime) / 1000 / 60);
-			document.getElementById("updatedMessage").innerHTML = `Last updated on ${date} <br> at ${time} (${age} minutes ago)`;
-		}
-
-		function plotData(countByDate = null, chartElement = null, maxAgeDays = Infinity, pointSize = 3) {
-			var data = new google.visualization.DataTable();
-			data.addColumn('date', 'X');
-			data.addColumn('number', 'Count');
-
-			if (countByDate) {
-				for (const [key, value] of Object.entries(countByDate)) {
-					let dt = new Date(key);
-					let count = parseInt(value);
-					let ageDays = Math.floor((Date.now() - dt) / 1000 / 60 / 60 / 24); // days
-					if (ageDays < maxAgeDays)
-						data.addRow([dt, count]);
-				}
-			}
-
-			var options = {
-				legend: { position: 'none' },
-				hAxis: {
-				},
-				vAxis: {
-					title: 'Number of members in General'
-				},
-				'chartArea': {
-					'width': '75%',
-					'height': '85%',
-					'top': '5%'
-				},
-				pointSize: pointSize,
-			};
-
-			var chart = new google.visualization.LineChart(chartElement);
-			chart.draw(data, options);
-		}
-	</script>
-
-	<!-- custom analytics -->
-	<script src="https://swharden.com/analytics/js/v1.js" defer></script>
-	
-	<!-- Google analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=G-GTDW4MF6JP"></script>
-	<script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag() { dataLayer.push(arguments); }
-		gtag('js', new Date());
-		gtag('config', 'G-GTDW4MF6JP');
-	</script>
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 
-<body class="bg-light" onload="getLatestData();">
-	<div class="container my-3 p-3 text-center">
-		<h1 class="display-4">CodingBlocks.NET</h1>
-		<h1 class="display-5">Slack Stats</h1>
+<body>
+    <div class="container">
+        <h1 class="mt-5">CodingBlocks.NET Uptime Monitor</h1>
+        <div>
+            <a href="https://github.com/swharden/CodingBlocksUptime">https://github.com/swharden/CodingBlocksUptime</a>
+        </div>
 
-		<div class="border my-3 bg-white py-3 rounded shadow-sm">
-			<h1>Last 90 Days</h1>
-			<div id="chartRecent" style="height: 500px;"></div>
-		</div>
+        <section class="my-5">
+            <h3>Current Status: All good 🚀</h3>
+            <div id="last-updated"></div>
+        </section>
 
-		<div class="border my-3 bg-white py-3 rounded shadow-sm">
-			<h1>Since 2019</h1>
-			<div id="chartAll" style="height: 500px;"></div>
-		</div>
+        <section class="my-5">
+            <h3>Downtime Events</h3>
+        </section>
 
-		<div>
-			<img src="https://cbslackstats.z20.web.core.windows.net/general-member-count.png" class="border mx-auto my-5 shadow-sm" style="max-width: 100%">
-		</div>
-
-		<div id="updatedMessage" class="text-muted p-3">Loading...</div>
-
-		<a href='https://www.codingblocks.net/slack/' class="p-3">Join the Slack</a>
-		<a href='https://cbslackstats.z20.web.core.windows.net/general-member-count.json' class="p-3">Raw Data</a>
-		<a href='https://github.com/swharden/cb-slack-stats' class="p-3">Source on GitHub</a>
-	</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <script>
+        fetch(`https://codingblocksuptime.z20.web.core.windows.net/codingblocks.net-log.txt`)
+            .then(response => response.text())
+            .then(data => {
+                const el = document.getElementById("last-updated");
+                const lastUpdate = new Date(data);
+                const minutesSinceLastUpdate = Math.abs(new Date() - lastUpdate) / 1000 / 60;
+                el.innerHTML += `<p>Last Updated ${lastUpdate.toLocaleString()} (${minutesSinceLastUpdate.toFixed(2)} minutes ago)</p>`;
+            });
+    </script>
 </body>
 
 </html>
