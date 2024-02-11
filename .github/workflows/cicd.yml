@@ -20,9 +20,9 @@ jobs:
   build-test-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout
+      - uses: actions/checkout@v4
       - name: Setup .NET ${{ env.DOTNET_VERSION }}
-        uses: actions/setup-dotnet
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
       - name: Restore
@@ -34,7 +34,7 @@ jobs:
       - name: Publish
         run: dotnet publish "${{ env.FUNCTIONS_PROJECT_FOLDER }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}"
       - name: Deploy
-        uses: Azure/functions-action
+        uses: Azure/functions-action@v1
         with:
           app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
           publish-profile: ${{ secrets.CodingBlocksUptimeFunctions20240211151814_D5A0 }}
