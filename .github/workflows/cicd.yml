@@ -10,10 +10,10 @@ on:
 
 env:
   AZURE_FUNCTIONAPP_NAME: CodingBlocksUptimeFunctions20240211151814
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: CodingBlocksUptime.Functions/published
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: src/CodingBlocksUptime.Functions/published
   CONFIGURATION: Release
   DOTNET_VERSION: 8.0.x
-  FUNCTIONS_PROJECT_FOLDER: CodingBlocksUptime.Functions
+  FUNCTIONS_PROJECT_FOLDER: src/CodingBlocksUptime.Functions
   SOLUTION_FILE: src/CodingBlocksUptime.sln
 
 jobs:
