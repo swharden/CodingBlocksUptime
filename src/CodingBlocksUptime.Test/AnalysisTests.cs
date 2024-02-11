@@ -3,12 +3,13 @@
 internal class AnalysisTests
 {
     [Test]
-    public void Test_Analysis_Downtime()
+    public void Test_Analysis_Report()
     {
         Database db = SampleData.LoadSampleDatabase();
-        List<Outage> outages = OutageAnalysis.GetOutages(db);
+        List<Outage> outages = Report.GetOutages(db);
         outages.Should().NotBeEmpty();
 
-        Console.WriteLine(OutageAnalysis.GetOutageReport(db));
+        string report = Report.GetJson(db);
+        Console.WriteLine(report);
     }
 }

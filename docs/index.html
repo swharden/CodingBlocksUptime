@@ -40,13 +40,14 @@
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
     <script>
-        fetch(`https://codingblocksuptime.z20.web.core.windows.net/codingblocks.net-log.txt`)
+        fetch(`https://codingblocksuptime.z20.web.core.windows.net/codingblocks.net-status.txt`)
             .then(response => response.text())
             .then(data => {
                 const el = document.getElementById("last-updated");
-                const lastUpdate = new Date(data);
-                const minutesSinceLastUpdate = Math.abs(new Date() - lastUpdate) / 1000 / 60;
-                el.innerHTML += `<p>Last Updated ${lastUpdate.toLocaleString()} (${minutesSinceLastUpdate.toFixed(2)} minutes ago)</p>`;
+                el.innerHTML += `<p>${data}</p>`;
+                //const lastUpdate = new Date(data);
+                //const minutesSinceLastUpdate = Math.abs(new Date() - lastUpdate) / 1000 / 60;
+                //el.innerHTML += `<p>Last Updated ${lastUpdate.toLocaleString()} (${minutesSinceLastUpdate.toFixed(2)} minutes ago)</p>`;
             });
     </script>
 </body>

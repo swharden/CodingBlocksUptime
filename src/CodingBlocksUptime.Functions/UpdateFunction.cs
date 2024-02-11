@@ -10,8 +10,7 @@ public class UpdateFunction(ILoggerFactory loggerFactory)
 {
     private readonly ILogger Logger = loggerFactory.CreateLogger<UpdateFunction>();
     private const string DB_FILENAME = "codingblocks.net.csv";
-    private const string STATUS_FILENAME = "codingblocks.net-status.txt";
-    private const string OUTAGE_FILENAME = "codingblocks.net-outage.txt";
+    private const string REPORT_FILENAME = "codingblocks.net.json";
 
     [Function("UpdateFunction")]
     public void Run(
@@ -30,8 +29,7 @@ public class UpdateFunction(ILoggerFactory loggerFactory)
         Database db = LoadDatabaseFromFile(containerClient);
         db.Records.Add(response.DatabaseRecord);
         SaveDatabaseToFile(db, containerClient);
-        CreateStatusFile(db, containerClient);
-        CreateOutageFile(db, containerClient);
+        CreateReportFile(db, containerClient);
         Logger.LogInformation("Function execution complete.");
     }
 
@@ -72,26 +70,14 @@ public class UpdateFunction(ILoggerFactory loggerFactory)
         blobClient.SetHttpHeaders(new BlobHttpHeaders() { ContentType = "text/plain" });
     }
 
-    private void CreateStatusFile(Database db, BlobContainerClient containerClient)
+    private void CreateReportFile(Database db, BlobContainerClient containerClient)
     {
-        string text = db.Records.Last().ToCsvLine();
-        byte[] bytes = Encoding.UTF8.GetBytes(text);
-        Logger.LogInformation("Writing {LENGTH} byte status file...", bytes.Length);
+        string json = Report.GetJson(db);
+        byte[] bytes = Encoding.UTF8.GetBytes(json);
+        Logger.LogInformation("Writing {LENGTH} byte report file...", bytes.Length);
 
         using MemoryStream ms = new(bytes);
-        BlobClient blobClient = containerClient.GetBlobClient(STATUS_FILENAME);
-        blobClient.Upload(ms, overwrite: true);
-        blobClient.SetHttpHeaders(new BlobHttpHeaders() { ContentType = "text/plain" });
-    }
-
-    private void CreateOutageFile(Database db, BlobContainerClient containerClient)
-    {
-        string text = OutageAnalysis.GetOutageReport(db);
-        byte[] bytes = Encoding.UTF8.GetBytes(text);
-        Logger.LogInformation("Writing {LENGTH} byte outage file...", bytes.Length);
-
-        using MemoryStream ms = new(bytes);
-        BlobClient blobClient = containerClient.GetBlobClient(OUTAGE_FILENAME);
+        BlobClient blobClient = containerClient.GetBlobClient(REPORT_FILENAME);
         blobClient.Upload(ms, overwrite: true);
         blobClient.SetHttpHeaders(new BlobHttpHeaders() { ContentType = "text/plain" });
     }
