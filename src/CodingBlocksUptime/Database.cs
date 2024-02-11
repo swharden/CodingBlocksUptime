@@ -4,7 +4,7 @@ namespace CodingBlocksUptime;
 
 public class Database
 {
-    public List<DbRecord> Records = [];
+    public List<DatabaseRecord> Records = [];
 
     private Database()
     {
@@ -16,7 +16,7 @@ public class Database
         return $"Database with {Records.Count} records";
     }
 
-    public DbRecord[] GetRecords() => Records.ToArray();
+    public DatabaseRecord[] GetRecords() => Records.ToArray();
 
     public static Database FromCsv(string text)
     {
@@ -24,7 +24,7 @@ public class Database
 
         foreach (string line in text.Split('\n'))
         {
-            DbRecord? record = DbRecord.FromCsvLine(line);
+            DatabaseRecord? record = DatabaseRecord.FromCsvLine(line);
             if (record is not null)
                 db.Records.Add(record);
         }
@@ -36,7 +36,7 @@ public class Database
     {
         StringBuilder sb = new();
         sb.AppendLine("# Date, Code, Size, Time");
-        foreach (DbRecord record in Records)
+        foreach (DatabaseRecord record in Records)
         {
             sb.AppendLine(record.ToCsvLine());
         }

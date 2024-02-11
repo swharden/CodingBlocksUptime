@@ -1,7 +1,8 @@
 ﻿namespace CodingBlocksUptime;
-public record DbRecord(DateTime Date, int Code, int Size, double Time)
+
+public record DatabaseRecord(DateTime Date, int Code, int Size, double Time)
 {
-    public static DbRecord? FromCsvLine(string line)
+    public static DatabaseRecord? FromCsvLine(string line)
     {
         if (line.StartsWith('#'))
             return null;
@@ -10,7 +11,7 @@ public record DbRecord(DateTime Date, int Code, int Size, double Time)
         if (parts.Length != 4)
             return null;
 
-        return new DbRecord(
+        return new DatabaseRecord(
             Date: DateTime.Parse(parts[0]).ToUniversalTime(),
             Code: int.Parse(parts[1]),
             Size: int.Parse(parts[2]),

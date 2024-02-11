@@ -7,6 +7,7 @@ public class HttpResponseInfo(double timeMsec, int code, string content)
     public readonly double TimeMsec = timeMsec;
     public readonly string Content = content;
     public int Size => Content.Length;
+    public DatabaseRecord DatabaseRecord => new(DateTime, Code, Size, TimeMsec);
 
     public override string ToString()
     {
