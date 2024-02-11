@@ -26,28 +26,69 @@
             <a href="https://github.com/swharden/CodingBlocksUptime">https://github.com/swharden/CodingBlocksUptime</a>
         </div>
 
-        <section class="my-5">
-            <h3>Current Status: All good 🚀</h3>
-            <div id="last-updated"></div>
-        </section>
+        <div class="my-5 py-3 px-5" id="div-loading">
+            <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+
+        <div class="my-5 collapse" id="div-operational">
+            <div class="alert alert-success mx-auto d-inline-block" role="alert">
+                <h4 class="alert-heading">Website is Operational 🚀</h4>
+                <div id="operational-message"></div>
+                <div id="operational-checked"></div>
+            </div>
+        </div>
+
+        <div class="my-5 collapse" id="div-down">
+            <div class="alert alert-danger mx-auto d-inline-block" role="alert">
+                <h3 class="alert-heading">Website is Down 💀</h3>
+                <div id="down-message"></div>
+                <div id="down-checked"></div>
+            </div>
+        </div>
 
         <section class="my-5">
             <h3>Downtime Events</h3>
+            <ul id="event-list">
+
+            </ul>
         </section>
 
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
+
     <script>
-        fetch(`https://codingblocksuptime.z20.web.core.windows.net/codingblocks.net-status.txt`)
-            .then(response => response.text())
+        fetch(`https://codingblocksuptime.z20.web.core.windows.net/codingblocks.net.json`)
+            .then(response => response.json())
             .then(data => {
-                const el = document.getElementById("last-updated");
-                el.innerHTML += `<p>${data}</p>`;
-                //const lastUpdate = new Date(data);
-                //const minutesSinceLastUpdate = Math.abs(new Date() - lastUpdate) / 1000 / 60;
-                //el.innerHTML += `<p>Last Updated ${lastUpdate.toLocaleString()} (${minutesSinceLastUpdate.toFixed(2)} minutes ago)</p>`;
+
+                document.getElementById("operational-message").innerHTML = `Home page load time: ${data.lastTime} ms`;
+                document.getElementById("down-message").innerHTML = `It's been down for ${data.Outages[0].hours} hours!`;
+
+                document.getElementById("div-loading").classList.add("collapse");
+                if (data.isCurrentOutage) {
+                    document.getElementById("div-down").classList.remove("collapse");
+                } else {
+                    document.getElementById("div-operational").classList.remove("collapse");
+                }
+
+                const lastUpdate = new Date(data.lastUpdate);
+                const minutesSinceLastUpdate = Math.abs(new Date() - lastUpdate) / 1000 / 60;
+                const lastCheckedMessage = `Last checked: ${lastUpdate.toLocaleString()} (${minutesSinceLastUpdate.toFixed(2)} minutes ago)`;
+                document.getElementById("operational-checked").innerHTML = lastCheckedMessage;
+                document.getElementById("down-checked").innerHTML = lastCheckedMessage;
+
+                const downtimeUl = document.getElementById("event-list");
+                data.Outages.forEach(x => {
+                    const outageStart = new Date(x.start);
+                    const li = document.createElement("li");
+                    li.innerText = `${x.hours} hour outage at ${outageStart.toLocaleString()}`
+                    downtimeUl.appendChild(li);
+                });
             });
     </script>
 </body>
