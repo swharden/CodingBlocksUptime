@@ -27,36 +27,47 @@
 
 <body>
     <div class="container">
-        <h1 class="mt-5">CodingBlocks.NET Uptime Report</h1>
+        <h1 class="my-5">CodingBlocks.NET Uptime Report</h1>
 
-        <div class="my-5 py-3 px-5" id="div-loading">
-            <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>
+        <section class="d-flex flex-wrap">
 
-        <div class="my-5 collapse" id="div-operational">
-            <div class="alert alert-success mx-auto d-inline-block" role="alert">
-                <h4 class="alert-heading">Website is Currently Operational 🚀</h4>
-                <div id="operational-message"></div>
-                <div id="operational-checked"></div>
+            <div class="m-3 py-3 px-5" id="div-loading">
+                <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
             </div>
-        </div>
 
-        <div class="my-5 collapse" id="div-down">
-            <div class="alert alert-danger mx-auto d-inline-block" role="alert">
-                <h3 class="alert-heading">Website is Down 💀</h3>
-                <div id="down-message"></div>
-                <div id="down-checked"></div>
+            <div class="m-3 collapse" id="div-operational">
+                <div class="alert alert-success mx-auto d-inline-block" role="alert">
+                    <h4 class="alert-heading">Website is Currently Operational 🚀</h4>
+                    <div id="operational-message" class="collapse"></div>
+                    <div id="operational-checked"></div>
+                </div>
             </div>
-        </div>
 
-        <div class="my-5 collapse" id="div-uptime">
-            <div class="alert alert-primary mx-auto d-inline-block" role="alert">
-                <h4 class="alert-heading" id="uptime-title"></h4>
-                <div id="uptime-message"></div>
+            <div class="m-3 collapse" id="div-down">
+                <div class="alert alert-danger mx-auto d-inline-block" role="alert">
+                    <h3 class="alert-heading">Website is Down 💀</h3>
+                    <div id="down-message"></div>
+                    <div id="down-checked"></div>
+                </div>
             </div>
-        </div>
+
+            <div class="m-3 collapse" id="div-uptime">
+                <div class="alert alert-primary mx-auto d-inline-block" role="alert">
+                    <h4 class="alert-heading" id="uptime-title"></h4>
+                    <div id="uptime-message"></div>
+                </div>
+            </div>
+
+            <div class="m-3 collapse" id="div-days">
+                <div class="alert alert-secondary mx-auto d-inline-block" role="alert">
+                    <h4 class="alert-heading" id="days-title"></h4>
+                    <div id="days-message"></div>
+                </div>
+            </div>
+
+        </section>
 
         <section class="my-5">
             <h3>Downtime Events</h3>
@@ -83,6 +94,7 @@
                 // set visibility of various elements
                 document.getElementById("div-loading").classList.add("collapse");
                 document.getElementById("div-uptime").classList.remove("collapse");
+                document.getElementById("div-days").classList.remove("collapse");
                 if (data.isCurrentOutage) {
                     document.getElementById("div-down").classList.remove("collapse");
                 } else {
@@ -102,7 +114,12 @@
                 const reliabilityPercent = Math.round(data.uptimePercent * 1000) / 1000;
                 const attemptYears = Math.round(data.recordsTotal / 24 / 365 * 1000) / 1000;
                 document.getElementById("uptime-title").innerText = `${reliabilityPercent}% Uptime`;
-                document.getElementById("uptime-message").innerText = `Reported over ${attemptYears} years`;
+                document.getElementById("uptime-message").innerText = `Evaluated over ${attemptYears} years`;
+
+                // days since last incident
+                const daysSince = Math.round((new Date() - new Date(data.Outages[0].start)) / 1000 / 60 / 60 / 24 * 100) / 100;
+                document.getElementById("days-title").innerText = `${daysSince} days`;
+                document.getElementById("days-message").innerText = `Since last incident`;
 
                 // populate list of outages
                 const downtimeUl = document.getElementById("event-list");
